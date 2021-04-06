@@ -18,12 +18,12 @@ A Deep Network for Simultaneous Identification of Gulf Stream and Rings from Con
     https://cds.climate.copernicus.eu/cdsapp#!/dataset/satellite-sea-level-global?tab=overview
  2. Run Download_data/SSH_nc_to_colormap.py
  
-#Training
-For training the model Run train.py 
+# Training
+For training the model run train.py 
     train.py uses load_data.py to load the data. loss.py file constains differnt loss function used for training. Models contains different models used for ablation studies.
  
-#Test
- 4. Run Test/test.py
+# Test
+For testing run Test/test.py
     test.py gives the final test accuracy and it saves the overlapping ground-truth and perdicted images for a better visual inference. It also finds and prints the number of detected warm and cold eddies.
     
 #Further Evaluation
