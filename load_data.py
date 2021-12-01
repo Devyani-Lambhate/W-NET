@@ -21,7 +21,7 @@ def make_dataset(root: str) -> list:
     # Our dir names
     sst_dir = 'SST'
     #ssh_dir='SSH'
-    ssh_dir = 'SSH'
+    ssh_dir = 'low_res_SSH_recent'
     gt_dir = 'GT'   
 
     # Get all the filenames from RGB folder
@@ -62,8 +62,8 @@ def image_to_onehot(mask ,train_on_label,n_classes):
     """
     mask=mask.numpy()
     #print('mask',mask.shape)
-    mask=mask.reshape(500,600,1)
-    #mask=mask.reshape(512,512,1)
+    #mask=mask.reshape(500,600,1)
+    mask=mask.reshape(512,512,1)
     mask=mask*255
     #print(np.unique(mask))
     #print(mask)
@@ -149,12 +149,12 @@ class CustomVisionDataset(VisionDataset):
         if self.transform is not None:
             sst_sample = self.transform(sst_sample)
         if self.transform is not None:
-            #transform = transforms.Compose([transforms.Resize((100, 120)),transforms.ToTensor()])
-            ssh_sample = self.transform(ssh_sample)   
+            self.transform1 = transforms.Compose([transforms.Resize((128, 128)),transforms.ToTensor()])
+            ssh_sample = self.transform1(ssh_sample)   
         if self.target_transform is not None:
             gt_sample = self.target_transform(gt_sample)   
 
-        #print('2',sst_sample.size())
+        #print('2',ssh_sample.size())
         '''
 
 

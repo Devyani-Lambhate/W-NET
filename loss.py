@@ -1,7 +1,34 @@
+'''
+Loss used during the training
+
+Methods
+    -------
+    dice_loss(pred, target, smooth = 1.)
+        Computes simple Dice loss
+        
+    -------
+    dice_loss_weighted(pred, target, smooth = 1.)
+        Computes weighted Dice loss where weights are assigned to the labels 
+        proportional to their average inverse frequencies 
+     
+
+'''
 import torch
 import torch.nn as nn
 
 def dice_loss(pred, target, smooth = 1.):
+   
+    """
+        Parameters
+        ----------
+        pred : tensor
+            Predicted image
+        target : tensor
+            Target image
+        smooth : int
+            smoothing factor
+    """
+   
     pred = pred.contiguous()
     target = target.contiguous() 
 
@@ -21,6 +48,19 @@ def dice_loss(pred, target, smooth = 1.):
 
 
 def dice_loss_weighted(pred, target, smooth = 1.):
+
+     """
+        Parameters
+        ----------
+        pred : tensor
+            Predicted image
+        target : tensor
+            Target image
+        smooth : int
+            smoothing factor
+    """
+    
+    
     pred = pred.contiguous()
     target = target.contiguous() 
 

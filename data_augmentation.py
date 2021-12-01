@@ -1,4 +1,10 @@
 # import image utilities
+'''
+This code performs data augmentation on the SST , SSH and GT images
+by every 45 degree. It then saves all the rotated images by 
+appending the rotation angle with the image name
+'''
+
 from PIL import Image
 from scipy import ndimage, misc
 
@@ -8,16 +14,26 @@ import os
 # define a function that rotates images in the current directory
 # given the rotation in degrees as a parameter
 def rotateImages(rotationAmt):
+  """Rotates and saves all the images with the given rotation amount
+
+    Parameters
+    ----------
+    rotationAmt : int
+        Degree by which we need to rotate
+    
+    """
   # for each image in the current directory
-  #path_sst="merged/train_data/1km_SST/"
+  path_gt="merged/2019_20/GT/"
   #path_ssh="merged/winter/train_data/SSH/"
-  path_ssh="merged/train_data/low_res_SSH_recent/"
+  path_ssh="merged/2019_20/SST/"
   
   #path_save_sst="merged/train_data_augmented/1km_SST/"
   #path_save_ssh="merged/winter/train_data_augmented/SSH/"
-  path_save_ssh="merged/train_data_augmented/low_res_SSH_recent/"
+  path_save_ssh="merged/2019_20_augmented/SST/"
   
-  for image in os.listdir(path_ssh):
+  
+  
+  #for image in os.listdir(path_gt):
     # open the image
     print(image)
     img = Image.open(path_ssh+image)
@@ -30,6 +46,8 @@ def rotateImages(rotationAmt):
     
 # examples of use
 rot=[  0. , 45. , 90., 135., 180., 225. ,270. ,315.]
+
+#Iterate over all the rotation angles
 for i in range(len(rot)):
 	rotateImages(rot[i])
 

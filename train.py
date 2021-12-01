@@ -1,7 +1,12 @@
+'''
+Code to train the ML model (W-Net, Y-Net, U-Net and Res-W-Net)
+'''
+
+
 from torchsummary import summary
 import torch
 import torch.nn as nn
-import wnet_model_r_1 as wnet_model
+import wnet_model_r as wnet_model
 from collections import defaultdict
 import torch.nn.functional as F
 from loss import dice_loss
@@ -57,14 +62,14 @@ model = model.to(device)
 
 
 #interpolation=1 for Nearest Neighbour interpolation
-gt_transforms = transforms.Compose([transforms.Grayscale(num_output_channels=1),transforms.Resize((500, 600)),transforms.ToTensor()]) 
-sst_transforms = transforms.Compose([transforms.ToTensor()]) 
-#ssh_transforms = transforms.Compose([transforms.Resize((512/4, 512/4)),transforms.ToTensor()])  # we need this to convert PIL images to Tensor
 #gt_transforms = transforms.Compose([transforms.Grayscale(num_output_channels=1),transforms.Resize((500, 600)),transforms.ToTensor()]) 
 #sst_transforms = transforms.Compose([transforms.ToTensor()]) 
+#ssh_transforms = transforms.Compose([transforms.Resize((512/4, 512/4)),transforms.ToTensor()])  # we need this to convert PIL images to Tensor
+gt_transforms = transforms.Compose([transforms.Grayscale(num_output_channels=1),transforms.Resize((512, 512)),transforms.ToTensor()]) 
+sst_transforms = transforms.Compose([transforms.Resize((512, 512)),transforms.ToTensor()]) 
 #ssh_transforms = transforms.Compose([transforms.ToTensor()])  # we need this to convert PIL images to Tensor
 dir_train = "merged/train_data_augmented"
-dir_val = "merged/val_data"
+dir_val = "merged/test_data"
 dir_test = "merged/test_data"
 
 # CustomVisionDataset classes has some changes from standard vision dataset class
@@ -101,6 +106,24 @@ dataloaders = {
 
 def calc_loss(pred, target, metrics, bce_weight=1):
 
+    """
+    This function computes all the three losses that are: binary cross entropy, Dice loss and Combined loss
+    
+        Parameters
+        ----------
+        pred : Tensor
+            Predicted image
+        target : Tensor
+            Target image
+        metrics : Dict
+            A dictionary that saves all the three losses that are-
+                 metrics['bce']: Binary cross entropy loss
+                 metrics['dice']: Dice loss
+                 metrics['loss']: Combined loss
+           
+    """
+        
+
     bce = F.binary_cross_entropy_with_logits(pred, target)
 
     pred = F.sigmoid(pred)
@@ -130,6 +153,24 @@ from matplotlib import pyplot as plt
 ###################################################
 
 def to_one_hot(probs):
+
+   """
+    Converts predicted probabilities to one hot vectors
+    
+        Parameters
+        ----------
+        probs : Tensor (batch size * x_dim *y_dim)
+   		probabilities of Predicted image
+   		
+   		
+   	Returns
+   	----------
+   	one_hot : Tensor (4 (num_classes) *batch size * x_dim *y_dim)
+   		  One hot representation of Predicted image
+   	
+       
+           
+    """
     #print(probs.size())
     probs=probs.to(device)
     max_idx = torch.argmax(probs, 0, keepdim=True)
@@ -141,6 +182,24 @@ def to_one_hot(probs):
     return one_hot
 
 def onehot_to_image(onehot_image):
+
+    """
+    Converts one one-hot image to an image
+    
+        Parameters
+        ----------
+        probs : Tensor (batch size * x_dim *y_dim)
+   		probabilities of Predicted image
+   		
+   		
+   	Returns
+   	----------
+   	one_hot : Tensor (4 (num_classes) *batch size * x_dim *y_dim)
+   		  One hot representation of Predicted image
+   	
+       
+           
+    """
     image=np.zeros((500,600))
     #image=np.zeros((512,512))
 
@@ -254,8 +313,8 @@ def train_model(model, optimizer, num_epochs=60):
                 #print('sst_inputs',sst_inputs.size())
                 with torch.set_grad_enabled(phase == 'train'):
                     #print('!!!!!!!!!!!!!!!!!!!!!!!!',sst_inputs.size())
-                    outputs,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_= model(sst_inputs,ssh_inputs)
-                    #outputs,_,_,_,_=model(sst_inputs,ssh_inputs)
+                    #outputs,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_= model(sst_inputs,ssh_inputs)
+                    outputs=model(sst_inputs,ssh_inputs)
 
                     #print('outputs',outputs.size())
              
@@ -355,9 +414,9 @@ plt.legend(['train', 'validation'], loc='upper right')
 plt.savefig('train_val_loss.png')
 
 ################## save the model #########################
-path="wnet-direct-7-27march-bce.pth"
+path="wnet-direct-29May-with2019.pth"
 torch.save(model, path)
-path="wnet-statedict-7-27march-bce.pth"
+path="wnet-statedict-29May-with2019.pth"
 torch.save(model.state_dict(), path)
 print("model saved")
 
@@ -407,7 +466,11 @@ import math
 i=1
 test_loader=dataloaders["val"]
 
-for sst_inputs,ssh_inputs, labels, onehot_labels in dataloaders["val"]:
+
+'''
+Code to print Test accuracies and Test images
+'''
+for sst_inputs,ssh_inputs, labels, onehot_labels in dataloaders["test"]:
     #sst_inputs, ssh_inputs, labels, onehot_labels = next(iter(test_loader))
     #print(sst_inputs.shape)
 
@@ -416,30 +479,36 @@ for sst_inputs,ssh_inputs, labels, onehot_labels in dataloaders["val"]:
     sst_inputs = sst_inputs.to(device)
     ssh_inputs = ssh_inputs.to(device)
     labels = labels.to(device)
-    pred_test, h_sst_conv, h_ssh_conv,h_sst, h_ssh,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_ = model(sst_inputs,ssh_inputs)
-    #pred_test, h_sst_conv, h_ssh_conv,h_sst, h_ssh = model(sst_inputs,ssh_inputs)
+    #pred_test, h_sst_conv, h_ssh_conv,h_sst, h_ssh,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_ = model(sst_inputs,ssh_inputs)
+    pred_test = model(sst_inputs,ssh_inputs)
+    '''
 
     h_sst=h_sst_conv
     h_ssh=h_ssh_conv
+    '''
 
     print(pred_test.shape)
     pred_test = F.softmax(pred_test,dim=1)
     if(i==1):
         pred=pred_test
         onehot_labels_f=onehot_labels
+        '''
         h_sst_f=h_sst
         h_ssh_f=h_ssh
 
         h_sst_conv_f=h_sst_conv
         h_ssh_conv_f=h_ssh_conv
+        '''
     else:
         pred=torch.cat((pred,pred_test), 0)
         onehot_labels_f=torch.cat((onehot_labels_f,onehot_labels),0)
+        '''
         h_sst_f=torch.cat((h_sst_f,h_sst),0)
         h_ssh_f=torch.cat((h_ssh_f,h_ssh),0)
 
         h_sst_conv_f=torch.cat((h_sst_conv_f,h_sst_conv),0)
         h_ssh_conv_f=torch.cat((h_ssh_conv_f,h_ssh_conv),0)
+        '''
     i=2
 
 print(pred.shape)
@@ -449,16 +518,18 @@ avg_pred=np.zeros(n_classes)
 intersection=np.zeros(n_classes)
 
 
-for i in range(19):
+for i in range(20):
     pred[i]=to_one_hot(pred[i])
     pred1=pred[i]
     pred1=onehot_to_image(pred1)
     true=onehot_to_image(onehot_labels_f[i])
     pred1=pred1.detach().cpu().numpy()
     true=true.detach().cpu().numpy()
+    '''
 
     h_sst_f[i]=to_one_hot(h_sst_f[i]) 
     h_ssh_f[i]=to_one_hot(h_ssh_f[i])
+    '''
 
     multiplied_image=np.multiply(true,pred1)
     #print(multiplied_image.shape)
