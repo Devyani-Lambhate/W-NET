@@ -62,4 +62,6 @@ Gulf stream evaluation metrics/Hausdorff_distance.py computes the Hausdorff dist
 Gulf stream evaluation metrics/path_length.py computs the mean and median path length difference between the ground truth and the predicted gulf stream centerline. 
 
 
+## Reference 
+[1] D. Lambhate, R. Sharma, J. Clark, A. Gangopadhyay and D. Subramani, "W-Net: A Deep Network for Simultaneous Identification of Gulf Stream and Rings From Concurrent Satellite Images of Sea Surface Temperature and Height," in IEEE Transactions on Geoscience and Remote Sensing, doi: 10.1109/TGRS.2021.3096202.
 
