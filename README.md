@@ -30,8 +30,17 @@ input. This data is available at 27km resolution. We need to manually download t
  2. Run Download_data/SSH_nc_to_colormap.py to convert Net-CDF files to images
  
 ## Training
-For training the model run train.py 
-    train.py uses load_data.py to load the data. loss.py file constains differnt loss function used for training. Models contains different models used for ablation studies.
+To train the model run train.py </br>
+train.py uses load_data.py to load the data. </br>
+loss.py file constains differnt loss function used for training. One can add custom loss functions here and use these new losses to train the model. </br>
+train.py calls w_net_model_r_1.py as it contains the main W-Net architecture. 
+
+There are a few thing that user can specify in the train.py to perform several experiments
+1. Number of classes and labels of classes. The network can be trained on all four labels (Warm eddies, Cold eddies, Gulf Stream and background) or it can be trained on a subset of these labels.
+2. Loss function (crossentropy, Dice or a mix of both)
+3. Type of model (W-Net, Res-W-Net, Y-Net, U-Net-SST, U-Net-SSH)
+4. Data (One can use full data, winter months data or summer months data)
+The train.py saves the model in w-net.pth, which can be used for testing and further evaluation.
  
 ## Test
 For testing run Test/test.py
