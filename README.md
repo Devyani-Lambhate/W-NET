@@ -39,18 +39,27 @@ There are a few thing that user can specify in the train.py to perform several e
 1. Number of classes and labels of classes. The network can be trained on all four labels (Warm eddies, Cold eddies, Gulf Stream and background) or it can be trained on a subset of these labels.
 2. Loss function (crossentropy, Dice or a mix of both)
 3. Type of model (W-Net, Res-W-Net, Y-Net, U-Net-SST, U-Net-SSH)
-4. Data (One can use full data, winter months data or summer months data)
+4. Data (One can use full data, winter months data or summer months data) </br>
 The train.py saves the model in w-net.pth, which can be used for testing and further evaluation.
  
 ## Test
-For testing run Test/test.py
-    test.py gives the final test accuracy and it saves the overlapping ground-truth and perdicted images for a better visual inference. It also finds and prints the number of detected warm and cold eddies.
-    
-## Further Evaluation
-thinning.py performs the thinning operation on the gulf stream.
-Code for further evaluation is saved in Model Evaluation methods. 
-Hausdorff_distance.py computes the Hausdorff distance, Mean curve distance and Median curve distance.
-path_length.py computs the path length difference between the ground truth and the predicted gulf stream centerline. 
+To test the model run Test/test.py </br>
+test.py gives the final test accuracies for all the labels. It also saves the images with overlapping ground-truth and perdicted segments for a better visual inference. 
+
+## Evaluation metrics
+Commonly image segmentation is done on natural images, for which IOU and dice coefficient are used for both evalu-
+ation and training. However, in our application, we are interested in the dynamics of gulf stream and rings. Thus, different dynamic-inspired metrics are designed to evaluate the performance of the deep network.
+
+# Eddy evaluation
+We devise metrics that compare the size, centroid, and count between the ground truth and the network prediction for eddies.
+All the eddy evaluation metrics are calculated in detect_eddies.py
+
+# Gulf stream evaluation 
+One key challenge in automated detection of the Gulf Stream is to capture its meandering path accurately. We first converted the gulf stream segments to its centerline using a morphological thinning operation using thinning.py. Then we computed path length difference and several curve difference metrics. </br>
+
+Codes for all the Gulfstream evaluation metrics are saved in the folder 'Gulf stream evaluation metrics'. </br>
+Gulf stream evaluation metrics/Hausdorff_distance.py computes the Hausdorff distance, Mean curve distance and Median curve distance.</br>
+Gulf stream evaluation metrics/path_length.py computs the mean and median path length difference between the ground truth and the predicted gulf stream centerline. 
 
 
 
