@@ -1,3 +1,9 @@
+'''
+Code performs morphological thinning operation on the Gulf stream segments.
+It then saves the resulting centerline images
+
+'''
+
 from matplotlib import pyplot as plt
 import os
 from PIL import Image

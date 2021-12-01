@@ -1,3 +1,7 @@
+'''
+Finds the Haussdorff distance, mean curve distance and median curve distance between the predicted and the ground truth gulfstream
+'''
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -76,7 +80,7 @@ def main():
 
 
 
-
+   
     print(np.mean(max_list),np.mean(min_list),np.mean(mean_list),np.median(mean_list))
     print(mean_list)
 
