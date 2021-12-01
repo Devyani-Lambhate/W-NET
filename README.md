@@ -1,22 +1,33 @@
 # W-NET
-A Deep Network for Simultaneous Identification of Gulf Stream and Rings from Concurrent Satellite Images of Sea Surface Temperature and Height
+From the literature we found that Sea Surface Temperature (SST) and Sea Surface Height (SSH) are the primary oceanographic variables that characterize the gulf stream and rings. We designed a network(W-Net) that could use SST and SSH data for automated and simultaneous identification of these synoptic ocean features.
 
-#Libraries required
+Main Libraries required
 1. pytorch 
 2. Matplotlib
 3. OpenCv
 4. Pillow
 
 ## Download SST and SSH data
+Our dataset consists of Sea Surface Temperature (SST) maps, Sea Surface Height (SSH) maps [Fig.1(b)], and the manual annotations of gulf stream and eddies by an expert. Our focus area is the region bounded by 85◦W to 55◦W and 20◦N to 45◦N. You can download the SST and SSH data using the steps described in the next section, but the maunal annotations of gulf stream and eddies are not publicaly available so we will skip that here. 
+
 ### SST data
- 1. Mount the podaac drive on your local machine using: https://podaac-tools.jpl.nasa.gov/drive/files/allData/ghrsst/data/L4/GLOB/UKMO/OSTIA
- 2. Run Download_data/SST_Poodac.py to download the nc files
- 3. Run Download_data/SST_nc_to_colormap.py to convert  Net-CDF files to images.
+We used the Level 4 Operational Sea Surface Temperature and Sea Ice Analysis (OSTIA) product as our SST input. This data is available at 5.5km resolution. We also tried 1km SST data but did not get any improvement in the network's performance.
+
+ link for OSTIA data : https://podaac-tools.jpl.nasa.gov/drive/files/allData/ghrsst/data/L4/GLOB/UKMO/OSTIA/
+ link for 1km SST data : https://podaac tools.jpl.nasa.gov/drive/files/allData/ghrsst/data/L4/GLOB/JPL_OUROCEAN/G1SST/
+ 
+ 1. Mount the podaac drive on your local machine using: 
+    sudo mount.davfs web_link /your_directory
+ 2. Run Download_data/SST_Poodac.py to download the Net-CDF files
+ 3. Run Download_data/SST_nc_to_colormap.py to convert Net-CDF files to images
  
 ### SSH data
+We used the gridded product of sea-level anomaly provided by copernicus marine environmental monitoring service (CMEMS) as our SSH
+input. This data is available at 27km resolution. We need to manually download the SSH data from the link below-
+
  1. Download all the NC files from year 2014 to 2018 from the below link- 
     https://cds.climate.copernicus.eu/cdsapp#!/dataset/satellite-sea-level-global?tab=overview
- 2. Run Download_data/SSH_nc_to_colormap.py
+ 2. Run Download_data/SSH_nc_to_colormap.py to convert Net-CDF files to images
  
 ## Training
 For training the model run train.py 
