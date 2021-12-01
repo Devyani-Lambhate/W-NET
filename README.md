@@ -46,15 +46,15 @@ The train.py saves the model in w-net.pth, which can be used for testing and fur
 To test the model run Test/test.py </br>
 test.py gives the final test accuracies for all the labels. It also saves the images with overlapping ground-truth and perdicted segments for a better visual inference. 
 
-# Evaluation metrics
+## Evaluation metrics
 Commonly image segmentation is done on natural images, for which IOU and dice coefficient are used for both evalu-
 ation and training. However, in our application, we are interested in the dynamics of gulf stream and rings. Thus, different dynamic-inspired metrics are designed to evaluate the performance of the deep network.
 
-# Eddy evaluation
+### Eddy evaluation
 We devise metrics that compare the size, centroid, and count between the ground truth and the network prediction for eddies.
 All the eddy evaluation metrics are calculated in detect_eddies.py
 
-# Gulf stream evaluation 
+### Gulf stream evaluation 
 One key challenge in automated detection of the Gulf Stream is to capture its meandering path accurately. We first converted the gulf stream segments to its centerline using a morphological thinning operation using thinning.py. Then we computed path length difference and several curve difference metrics. </br>
 
 Codes for all the Gulfstream evaluation metrics are saved in the folder 'Gulf stream evaluation metrics'. </br>
