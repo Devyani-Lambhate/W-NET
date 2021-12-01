@@ -46,7 +46,7 @@ The train.py saves the model in w-net.pth, which can be used for testing and fur
 To test the model run Test/test.py </br>
 test.py gives the final test accuracies for all the labels. It also saves the images with overlapping ground-truth and perdicted segments for a better visual inference. 
 
-## Evaluation metrics
+# Evaluation metrics
 Commonly image segmentation is done on natural images, for which IOU and dice coefficient are used for both evalu-
 ation and training. However, in our application, we are interested in the dynamics of gulf stream and rings. Thus, different dynamic-inspired metrics are designed to evaluate the performance of the deep network.
 
