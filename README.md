@@ -8,7 +8,7 @@ Main Libraries required
 4. Pillow
 
 ## Download SST and SSH data
-Our dataset consists of Sea Surface Temperature (SST) maps, Sea Surface Height (SSH) maps [Fig.1(b)], and the manual annotations of gulf stream and eddies by an expert. Our focus area is the region bounded by 85◦W to 55◦W and 20◦N to 45◦N. You can download the SST and SSH data using the steps described in the next section, but the maunal annotations of gulf stream and eddies are not publicaly available so we will skip that here. 
+Our dataset consists of Sea Surface Temperature (SST) maps, Sea Surface Height (SSH) maps, and the manual annotations of gulf stream and eddies by an expert. Our focus area is the region bounded by 85◦W to 55◦W and 20◦N to 45◦N. You can download the SST and SSH data using the steps described in the next section, but the maunal annotations of gulf stream and eddies are not publicaly available so we will skip that here. 
 
 ### SST data
 We used the Level 4 Operational Sea Surface Temperature and Sea Ice Analysis (OSTIA) product as our SST input. This data is available at 5.5km resolution. We also tried 1km SST data but did not get any improvement in the network's performance.
@@ -23,7 +23,7 @@ We used the Level 4 Operational Sea Surface Temperature and Sea Ice Analysis (OS
  
 ### SSH data
 We used the gridded product of sea-level anomaly provided by copernicus marine environmental monitoring service (CMEMS) as our SSH
-input. This data is available at 27km resolution. We need to manually download the SSH data from the link below-
+input. This data is available at 27km resolution. One needs to manually download the SSH data from the link below-
 
  1. Download all the NC files from year 2014 to 2018 from the below link- 
     https://cds.climate.copernicus.eu/cdsapp#!/dataset/satellite-sea-level-global?tab=overview
@@ -32,10 +32,10 @@ input. This data is available at 27km resolution. We need to manually download t
 ## Training
 To train the model run train.py </br>
 train.py uses load_data.py to load the data. </br>
-loss.py file constains differnt loss function used for training. One can add custom loss functions here and use these new losses to train the model. </br>
-train.py calls w_net_model_r_1.py as it contains the main W-Net architecture. 
+loss.py file contains differnt loss function used for training. One can add custom loss functions as well and use these new losses to train the model. </br>
+train.py calls w_net_model_r_1.py as it contains the main W-Net architecture. </br>
 
-There are a few thing that user can specify in the train.py to perform several experiments
+Here are a few thing that user can specify in the train.py to perform several experiments- </br>
 1. Number of classes and labels of classes. The network can be trained on all four labels (Warm eddies, Cold eddies, Gulf Stream and background) or it can be trained on a subset of these labels.
 2. Loss function (crossentropy, Dice or a mix of both)
 3. Type of model (W-Net, Res-W-Net, Y-Net, U-Net-SST, U-Net-SSH)
@@ -47,8 +47,7 @@ To test the model run Test/test.py </br>
 test.py gives the final test accuracies for all the labels. It also saves the images with overlapping ground-truth and perdicted segments for a better visual inference. 
 
 ## Evaluation metrics
-Commonly image segmentation is done on natural images, for which IOU and dice coefficient are used for both evalu-
-ation and training. However, in our application, we are interested in the dynamics of gulf stream and rings. Thus, different dynamic-inspired metrics are designed to evaluate the performance of the deep network.
+Commonly image segmentation is done on natural images, for which IOU and dice coefficient are used for both evaluation and training. However, in our application, we are interested in the dynamics of gulf stream and rings. Thus, different dynamic-inspired metrics are designed to evaluate the performance of the deep network.
 
 ### Eddy evaluation
 We devise metrics that compare the size, centroid, and count between the ground truth and the network prediction for eddies.
